@@ -11,7 +11,7 @@ from pathlib import Path
 
 # Load dataset
 print("Loading dataset...")
-df = pd.read_csv('datasets/EV_Predictive_Maintenance_Dataset_15min.csv')
+df = pd.read_csv('datasets/eviot_dataset.csv')
 
 # Define features and targets
 feature_cols = ['SoC', 'SoH', 'Battery_Voltage', 'Battery_Current', 

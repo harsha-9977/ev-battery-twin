@@ -14,6 +14,7 @@ A production-grade Electric Vehicle Battery Digital Twin with real-time telemetr
 - **Time-Series Database**: TimescaleDB (PostgreSQL) for efficient telemetry storage
 - **Message Streaming**: Kafka (Redpanda) and MQTT support for IoT integration
 - **Live Monitoring**: Grafana dashboards with 11 comprehensive panels
+- **Mission Control UI**: Browser dashboard with maintenance planner, driver behavior coach, pack topology, anomaly callouts, and alert timeline
 - **Metrics Collection**: Prometheus for system and business metrics with 15+ custom metrics
 - **Continuous Learning**: Automatic model retraining with historical data
 - **ML Ops**: MLflow for experiment tracking and model registry
@@ -158,6 +159,18 @@ python app_advanced.py
   - GET /api/battery/comparison (actual vs predicted)
   - GET /api/battery/history
   - GET /api/health
+
+### 🖥️ Advanced Web Dashboard Highlights
+
+Open http://localhost:5002 to access the latest `battery_digital_twin_advanced.html` cockpit. Key tiles include:
+
+- **SoH Capsule + Pack Topology** – A large SoH battery meter paired with a 12-module heatmap so you can spot degradations or hot modules instantly.
+- **Maintenance Planner** – Calculates urgency bands from SoH/failure probability, shows the nearest hub, and powers one-click “Schedule service” (prefilled email) and “Share health report” buttons (Web Share → clipboard fallback) for ops teams.
+- **Driver Behavior & Efficiency** – Classifies ride intensity from speed/current, surfaces efficiency score, regen state, and generates coaching tips based on thermal load, charging habits, and energy intensity.
+- **Anomaly Callouts + Timeline** – Auto-detects thermal spikes, voltage sag, aggressive riding, etc., surfaces them as callouts, and streams the same events into the alert timeline when new conditions appear or resolve.
+- **Alert & Instructions Stack** – Risk panel, quick-action buttons, live metrics grid, and system health card stay synchronized with the simulator/predictor polling loops.
+
+> Tip: Keep browser clipboard/share permissions enabled to let the share button copy the maintenance summary automatically. When all anomalies clear, the alert timeline logs a “green” recovery entry so you can audit interventions.
 
 ### Step 5: Configure Grafana Datasource
 

@@ -1,0 +1,9 @@
+[
+  "SoC",
+  "SoH",
+  "Battery_Voltage",
+  "Battery_Current",
+  "Battery_Temperature",
+  "Charge_Cycles",
+  "Power_Consumption"
+]

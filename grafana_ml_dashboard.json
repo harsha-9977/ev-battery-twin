@@ -110,6 +110,10 @@
         {
           "expr": "battery_soh_actual{battery_id=\"battery_001\"}",
           "refId": "A"
+        },
+        {
+          "expr": "battery_soh_predicted{battery_id=\"battery_001\"}",
+          "refId": "B"
         }
       ],
       "title": "Current SoH",
@@ -146,6 +150,10 @@
         {
           "expr": "battery_soc_actual{battery_id=\"battery_001\"}",
           "refId": "A"
+        },
+        {
+          "expr": "battery_soc_predicted{battery_id=\"battery_001\"}",
+          "refId": "B"
         }
       ],
       "title": "Current SoC",
@@ -252,7 +260,7 @@
           }
         ]
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
       "id": 6,
       "options": {
         "legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom"},
@@ -302,7 +310,7 @@
           }
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
       "id": 7,
       "options": {
         "legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom"},
@@ -347,7 +355,7 @@
           "unit": "percentunit"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
       "id": 8,
       "options": {
         "orientation": "auto",
@@ -394,7 +402,7 @@
           "unit": "percent"
         }
       },
-      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 32},
       "id": 9,
       "options": {
         "legend": {"calcs": ["lastNotNull", "mean"], "displayMode": "table", "placement": "right"},
@@ -439,7 +447,7 @@
           }
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 32},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 40},
       "id": 10,
       "options": {
         "colorMode": "value",
@@ -472,7 +480,7 @@
           }
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 32},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 40},
       "id": 11,
       "options": {
         "colorMode": "value",
@@ -490,7 +498,81 @@
       ],
       "title": "Model Retraining Events",
       "type": "stat"
-    }
+    },
+    {
+        "datasource": "prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "orange", "value": 70},
+                {"color": "green", "value": 85}
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 8},
+        "id": 12,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "targets": [
+          {
+            "expr": "battery_soh_predicted{battery_id=\"battery_001\"}",
+            "legendFormat": "Predicted SoH",
+            "refId": "A"
+          }
+        ],
+        "title": "Predicted SoH",
+        "type": "gauge"
+      },
+      {
+        "datasource": "prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "orange", "value": 20},
+                {"color": "green", "value": 50}
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 8},
+        "id": 13,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "targets": [
+          {
+            "expr": "battery_soc_predicted{battery_id=\"battery_001\"}",
+            "legendFormat": "Predicted SoC",
+            "refId": "A"
+          }
+        ],
+        "title": "Predicted SoC",
+        "type": "gauge"
+      }
   ],
   "refresh": "5s",
   "schemaVersion": 27,

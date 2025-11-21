@@ -120,10 +120,10 @@ class AdvancedModelPredictor:
         logger.info(f"📦 Successfully loaded {len(self.models)} models")
         logger.info(f"📋 Available models: {list(self.models.keys())}")
     
-    def prepare_features(self, state: Dict) -> np.ndarray:
-        """Prepare feature array from state dictionary"""
+    def prepare_features(self, state: Dict) -> pd.DataFrame:
+        """Prepare feature frame from state dictionary with named columns"""
         actual = state['actual']
-        features = np.array([
+        row = [[
             actual.get('soc', 85),
             actual.get('soh', 95),
             actual.get('battery_voltage', 380),
@@ -131,8 +131,8 @@ class AdvancedModelPredictor:
             actual.get('battery_temperature', 32),
             actual.get('charge_cycles', 150),
             actual.get('power_consumption', 45)
-        ]).reshape(1, -1)
-        return features
+        ]]
+        return pd.DataFrame(row, columns=self.feature_names)
     
     def predict_all(self, state: Dict) -> Dict:
         """Make predictions with all loaded models"""
@@ -265,16 +265,22 @@ def simulate_battery_advanced():
             battery_voltage.labels(battery_id=battery_id).set(actual['battery_voltage'])
             battery_current.labels(battery_id=battery_id).set(actual['battery_current'])
             battery_power.labels(battery_id=battery_id).set(actual['power_consumption'])
-            
-            # Update predicted metrics
-            if predictions.get('SoH'):
-                battery_soh_predicted.labels(battery_id=battery_id).set(predictions['SoH'])
-            if predictions.get('Battery_Temperature'):
-                battery_temp_predicted.labels(battery_id=battery_id).set(predictions['Battery_Temperature'])
-            if predictions.get('RUL'):
-                battery_rul_predicted.labels(battery_id=battery_id).set(predictions['RUL'])
-            if predictions.get('Failure_Probability'):
-                battery_failure_predicted.labels(battery_id=battery_id).set(predictions['Failure_Probability'])
+
+            # Always publish predicted gauges (fallback to actuals if model output missing)
+            predicted_soc = predictions.get('SoC') if predictions.get('SoC') is not None else actual['soc']
+            battery_soc_predicted.labels(battery_id=battery_id).set(predicted_soc)
+
+            predicted_soh = predictions.get('SoH') if predictions.get('SoH') is not None else actual['soh']
+            battery_soh_predicted.labels(battery_id=battery_id).set(predicted_soh)
+
+            predicted_temp = predictions.get('Battery_Temperature') if predictions.get('Battery_Temperature') is not None else actual['battery_temperature']
+            battery_temp_predicted.labels(battery_id=battery_id).set(predicted_temp)
+
+            predicted_rul = predictions.get('RUL') if predictions.get('RUL') is not None else actual['rul']
+            battery_rul_predicted.labels(battery_id=battery_id).set(predicted_rul)
+
+            predicted_failure = predictions.get('Failure_Probability') if predictions.get('Failure_Probability') is not None else actual['failure_probability']
+            battery_failure_predicted.labels(battery_id=battery_id).set(predicted_failure)
             
             # Determine health status
             if actual['soh'] > 85 and actual['failure_probability'] < 0.3:
